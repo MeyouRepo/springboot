@@ -1,8 +1,14 @@
 package com.meyoustu.liangchengj.website;
 
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,6 +73,39 @@ public class WebsiteSpringbootApplication
 //        filterRegistrationBean.setOrder(1);
 //        return filterRegistrationBean;
 //    }
+
+
+    @Bean
+    public TomcatServletWebServerFactory servletContainer() {
+        TomcatServletWebServerFactory tswsf = new TomcatServletWebServerFactory() {
+            @Override
+            protected void postProcessContext(Context context) {
+                SecurityConstraint sc = new SecurityConstraint();
+                sc.setUserConstraint("CONFIDENTIAL");
+                SecurityCollection collection = new SecurityCollection();
+                collection.addPattern("/*");
+                sc.addCollection(collection);
+                context.addConstraint(sc);
+            }
+        };
+        tswsf.addAdditionalTomcatConnectors(httpConnector());
+        return tswsf;
+    }
+
+
+    @Bean
+    public Connector httpConnector() {
+        Connector connector = new Connector(/*Http2Protocol.class.getName()*/
+                /*"org.apache.coyote.http2.Http2Protocol"*/
+                /*Http11NioProtocol.class.getName()*/
+                "org.apache.coyote.http11.Http11NioProtocol"
+        );
+        connector.setScheme("http");
+        connector.setPort(80);
+        connector.setSecure(false);
+        connector.setRedirectPort(443);
+        return connector;
+    }
 
 }
 
