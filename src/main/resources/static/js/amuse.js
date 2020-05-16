@@ -4,7 +4,7 @@
  */
 let doc = document;
 let win = window;
-let ajax;
+let xhr;
 
 function docWrite(text) {
     doc.write(text);
@@ -18,6 +18,11 @@ function loadHeadCommon(title) {
         '<title>' + title + '</title>' +
         '<link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">' +
         '<link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon.ico">');
+}
+
+function loadBeautyFont() {
+    docWrite('<style rel="stylesheet" type="text/css">*{font-family:"Helvetica Neue",Helvetica,Arial,"Microsoft Yahei",' +
+        '"Hiragino Sans GB","Heiti SC","WenQuanYi Micro Hei",sans-serif}</style>');
 }
 
 function loadJQ() {
@@ -77,9 +82,9 @@ function loadFullBootstrap() {
 
 function wol(handler) {
     if (win.XMLHttpRequest) {
-        ajax = new XMLHttpRequest();
+        xhr = new XMLHttpRequest();
     } else {
-        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
     }
     win.onload = handler();
 }
