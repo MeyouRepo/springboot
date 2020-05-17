@@ -17,6 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import javax.servlet.annotation.ServletSecurity;
+
 /**
  * @author Liangcheng Juves
  * Created at 2020/05/16 17:11
@@ -81,9 +83,12 @@ public class WebsiteSpringbootApplication
             @Override
             protected void postProcessContext(Context context) {
                 SecurityConstraint sc = new SecurityConstraint();
-                sc.setUserConstraint("CONFIDENTIAL");
+                sc.setUserConstraint(String.valueOf(ServletSecurity.TransportGuarantee.CONFIDENTIAL));
+
                 SecurityCollection collection = new SecurityCollection();
                 collection.addPattern("/*");
+                collection.setName("SSL");
+
                 sc.addCollection(collection);
                 context.addConstraint(sc);
             }
